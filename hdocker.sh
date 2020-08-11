@@ -8,7 +8,7 @@
 
 
 function helpPanel(){
-	echo "[?] Usage : $0 -n [machine_name] -i [ip] -d [dockername]"
+	echo "[?] Usage : $0 -n [machine_name] -i [ip]"
 }
 	
 
@@ -17,6 +17,7 @@ function EscojerTipoHacking(){
 	echo -e "1 - HackTheBox"
 	echo -e "2 - TryHackMe"
 	echo -e "3 - BugBounty "
+    echo -e "4 - Others"
 	echo -e "Introduce numero: " ; read num
 }
 
@@ -27,14 +28,16 @@ function main(){
         EscojerTipoHacking
         if [[ $num -eq 1 ]];then
             # HTB
-            sudo docker run -ti --name $name --cap-add=NET_ADMIN --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 -v /mnt/docker/kali/HTB/$name/work:/work marchortelano/pentestkali bash -c "cp ~/.zshrc ~/.zshrc.temp; cat ~/.zshrc.temp | sed 's/USER_NAME/$name/g;s/DOMAIN_NAME/HackTheBox/g;s/MACHINE_IP/$ip/g' > ~/.zshrc; zsh"; sudo cp /home/jack/Hacking/VPN/HTB/jackdel21.ovpn mnt/docker/kali/HTB/$name/work/
+            mkdir -p /mnt/docker/kali/HTB/$name/work && sudo docker run -ti --name $name --cap-add=NET_ADMIN --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 -v /mnt/docker/kali/HTB/$name/work:/work marchortelano/pentestkali bash -c "cp ~/.zshrc ~/.zshrc.temp; cat ~/.zshrc.temp | sed 's/USER_NAME/$name/g;s/DOMAIN_NAME/HackTheBox/g;s/MACHINE_IP/$ip/g' > ~/.zshrc; zsh"; sudo cp /home/jack/Hacking/VPN/HTB/jackdel21.ovpn /mnt/docker/kali/HTB/$name/work/
 
         elif [[ $num -eq 2  ]];then
             # TryHackMe
-            sudo docker run -ti --rm --cap-add=NET_ADMIN --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 -v /mnt/docker/kali/THM/$name/work:/work marchortelano/pentestkali bash -    c "cp ~/.zshrc ~/.zshrc.temp; cat ~/.zshrc.temp | sed 's/USER_NAME/$name/g;s/DOMAIN_NAME/HackTheBox/g' > ~/.zshrc; zsh"
-        elif [[ $num -eq 3 ]]
+            sudo docker run -ti --rm --cap-add=NET_ADMIN --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 -v /mnt/docker/kali/THM/work:/work marchortelano/pentestkali bash -c "cp ~/.zshrc ~/.zshrc.temp; cat ~/.zshrc.temp | sed 's/USER_NAME/$name/g;s/DOMAIN_NAME/TryHackMe/g;s/MACHINE_IP/$ip/g' > ~/.zshrc; zsh"
+        elif [[ $num -eq 3 ]]; then
             # BugBounty
-            docker run --rm -ti --name $ty_$name -v /mnt/docker/BugBounty/Bounties/$name/docker:/work marchortelano/bugbounty
+            sudo docker run -ti --name $ty_$name -v /mnt/docker/BugBounty/Bounties/$name/docker:/work marchortelano/bugbounty
+        elif [[ $num -eq 4 ]]; then
+            sudo docker run -ti --rm --cap-add=NET_ADMIN --device /dev/net/tun --sysctl net.ipv6.conf.all.disable_ipv6=0 marchortelano/pentestkali bash -c "cp ~/.zshrc ~/.zshrc.temp; cat ~/.zshrc.temp | sed 's/USER_NAME/$name/g;s/DOMAIN_NAME/HackTheBox/g;s/MACHINE_IP/$ip/g' > ~/.zshrc; zsh"
         else 
             echo -e "\n[*] Error, opcion incorrecta..."
             return 1
